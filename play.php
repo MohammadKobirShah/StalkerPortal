@@ -1,44 +1,78 @@
 <?php
-include("config.php");
+require_once "jitendraunatti.php";
+global $SCARLET_WITCH;
+$id = $_GET['id'];
+$name = $_GET['name'];
+$ROLEX  = $SCARLET_WITCH["meta_data"];
+function e($str)
+{
+    return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
+}
 ?>
+<!DOCTYPE html>
 <html>
+
 <head>
-    <title><?php echo $MJ["Meta_data"]["title"]; ?></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="shortcut icon" type="image/x-icon" href="<?php echo $MJ["Meta_data"]["favicon"]; ?>">
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title> <?php echo $name . " | " . htmlspecialchars($SCARLET_WITCH['JITENDRA_UNIVERSE']['DEV_NAME']); ?></title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/GQCh1t2b/Screenshot-2026-04-13-at-3-50-15-PM.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <style>
-        html {
-            font-family: Poppins;
-            background: #000;
+        * {
             margin: 0;
-            padding: 0
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .loading {
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Poppins;
+        }
+
+        video,
+        .plyr,
+        .plyr__video-wrapper {
+            width: 100vw;
+            height: 100dvh;
+        }
+
+        video,
+        .plyr {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+        }
+
+        .plyr {
+            margin: 0 !important;
+        }
+
+        video {
+            object-fit: cover;
+            opacity: 1;
+        }
+
+        /* Loader */
+        .loading {
+            position: fixed;
+            inset: 0;
             background: #000;
             z-index: 9999;
         }
 
         .loading-text {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            inset: 0;
             margin: auto;
             text-align: center;
-            width: 100%;
             height: 100px;
             line-height: 100px;
         }
@@ -51,93 +85,75 @@ include("config.php");
         }
 
         .loading-text span:nth-child(1) {
-            filter: blur(0px);
             animation: blur-text 1.5s 0s infinite linear alternate;
         }
 
         .loading-text span:nth-child(2) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 0.2s infinite linear alternate;
+            animation: blur-text 1.5s 0.15s infinite linear alternate;
         }
 
         .loading-text span:nth-child(3) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 0.4s infinite linear alternate;
+            animation: blur-text 1.5s 0.3s infinite linear alternate;
         }
 
         .loading-text span:nth-child(4) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 0.6s infinite linear alternate;
+            animation: blur-text 1.5s 0.45s infinite linear alternate;
         }
 
         .loading-text span:nth-child(5) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 0.8s infinite linear alternate;
+            animation: blur-text 1.5s 0.6s infinite linear alternate;
         }
 
         .loading-text span:nth-child(6) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.0s infinite linear alternate;
+            animation: blur-text 1.5s 0.75s infinite linear alternate;
         }
 
         .loading-text span:nth-child(7) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.2s infinite linear alternate;
+            animation: blur-text 1.5s 0.9s infinite linear alternate;
         }
 
         .loading-text span:nth-child(8) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.4s infinite linear alternate;
+            animation: blur-text 1.5s 1.05s infinite linear alternate;
         }
 
         .loading-text span:nth-child(9) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.6s infinite linear alternate;
+            animation: blur-text 1.5s 1.2s infinite linear alternate;
         }
 
         .loading-text span:nth-child(10) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.8s infinite linear alternate;
+            animation: blur-text 1.5s 1.35s infinite linear alternate;
         }
 
         .loading-text span:nth-child(11) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.8s infinite linear alternate;
+            animation: blur-text 1.5s 1.5s infinite linear alternate;
         }
 
         .loading-text span:nth-child(12) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 1.8s infinite linear alternate;
+            animation: blur-text 1.5s 1.65s infinite linear alternate;
         }
 
         .loading-text span:nth-child(13) {
-            filter: blur(0px);
             animation: blur-text 1.5s 1.8s infinite linear alternate;
         }
 
         .loading-text span:nth-child(14) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 2.0s infinite linear alternate;
+            animation: blur-text 1.5s 1.95s infinite linear alternate;
         }
 
         .loading-text span:nth-child(15) {
-            filter: blur(0px);
             animation: blur-text 1.5s 2.1s infinite linear alternate;
         }
 
         .loading-text span:nth-child(16) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 2.2s infinite linear alternate;
+            animation: blur-text 1.5s 2.25s infinite linear alternate;
         }
 
         .loading-text span:nth-child(17) {
-            filter: blur(0px);
             animation: blur-text 1.5s 2.4s infinite linear alternate;
         }
 
         .loading-text span:nth-child(18) {
-            filter: blur(0px);
-            animation: blur-text 1.5s 2.6s infinite linear alternate;
+            animation: blur-text 1.5s 2.55s infinite linear alternate;
         }
 
         @keyframes blur-text {
@@ -150,104 +166,132 @@ include("config.php");
             }
         }
 
+        /* Logos */
         .plyr__video-wrapper::before {
+            content: '';
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 10;
-            content: '';
-            height: 35px;
             width: 35px;
-            background: url('<?php echo @$MJ["Meta_data"]["Rimg"]; ?>') no-repeat;
-            background-size: 35px auto, auto;
+            height: 35px;
+            background: url('<?= e($ROLEX['Rimg'] ?? '') ?>') no-repeat;
+            background-size: cover;
+            z-index: 10;
         }
 
         .plyr__video-wrapper::after {
+            content: '';
             position: absolute;
             top: 100px;
             left: 15px;
-            z-index: 15;
-            content: '';
+            width: 300px;
             height: 150px;
-            width: 350px;
-            background: url('<?php echo @$MJ["Meta_data"]["Limg"]; ?>') no-repeat;
-            background-size: 300px auto, auto;
+            background: url('<?= e($ROLEX['Limg'] ?? '') ?>') no-repeat;
+            background-size: contain;
+            z-index: 10;
         }
-        .video-player {
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-    }
-
     </style>
 </head>
 
 <body>
     <div id="loading" class="loading">
         <div class="loading-text">
-        <?php
-if (isset($ROLEX['span']) && is_array($ROLEX['span'])):
-    $index = 0;
-    //The script can be downloaded from here: https://github.com/Jitendraunatti/
-    foreach ($ROLEX['span'] as $span) :
-    
-        if ($index < 8) {
-           
-            $color = '#FF9966';
-        } elseif ($index >= 8 && $index < 12) {
-          
-            $color = '#FF0000';
-        } else {
-         
-            $color = '#66CC66';
-        }
-        
-        echo "<span style='color:$color'>$span</span>";
-        $index++;
-    endforeach;
-endif;
-?>
-
+            <span style="color:#FF9966"><?= e($ROLEX['span'][0] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][1] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][2] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][3] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][4] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][5] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][6] ?? '') ?></span>
+            <span style="color:#FF9966"><?= e($ROLEX['span'][7] ?? '') ?></span>
+            <span style="color:#FF0000"><?= e($ROLEX['span'][8] ?? '') ?></span>
+            <span style="color:#FF0000"><?= e($ROLEX['span'][9] ?? '') ?></span>
+            <span style="color:#FF0000"><?= e($ROLEX['span'][10] ?? '') ?></span>
+            <span style="color:#FF0000"><?= e($ROLEX['span'][11] ?? '') ?></span>
+            <span style="color:#FF0000"><?= e($ROLEX['span'][12] ?? '') ?></span>
+            <span style="color:#66CC66"><?= e($ROLEX['span'][13] ?? '') ?></span>
+            <span style="color:#66CC66"><?= e($ROLEX['span'][14] ?? '') ?></span>
+            <span style="color:#66CC66"><?= e($ROLEX['span'][15] ?? '') ?></span>
         </div>
     </div>
-
-    <video autoplay controls crossorigin poster="<?php echo heaven(); ?>" playsinline>
-        <source src="<?php echo "jitendraunatti.php?id=". $_REQUEST["id"]; ?>" type="application/x-mpegURL">
+    <video id="player" autoplay controls playsinline poster="<?= heaven(); ?>">
+        <source src="live.php?id=<?= htmlspecialchars($id); ?>" type="application/x-mpegURL">
     </video>
-    <script>
-        setTimeout(videovisible, 1000)
 
-        function videovisible() {
-            document.getElementById('loading').style.display = 'none';
-        }
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const e = document.querySelector("video"),
-                n = e.getElementsByTagName("source")[0].src,
-                o = {};
+
+            const video = document.getElementById("player");
+            if (!video) return;
+
+            const source = video.querySelector("source");
+            if (!source) return;
+
+            const src = source.src;
+            let options = {};
+            let speed = navigator.connection?.downlink || 5;
+            let targetQuality = 720;
+            if (speed < 1) targetQuality = 240;
+            else if (speed < 2) targetQuality = 360;
+            else if (speed < 5) targetQuality = 480;
+
             if (Hls.isSupported()) {
-                var config = {
-                    maxMaxBufferLength: 100,
-                };
-                const t = new Hls(config);
-                t.loadSource(n), t.on(Hls.Events.MANIFEST_PARSED, function(n, l) {
-                    const s = t.levels.map(e => e.height);
-                    o.quality = {
-                        default: s[0],
-                        options: s,
-                        forced: !0,
-                        onChange: e => (function(e) {
-                            window.hls.levels.forEach((n, o) => {
-                                n.height === e && (window.hls.currentLevel = o)
-                            })
-                        })(e)
+
+                const hls = new Hls({
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                    capLevelToPlayerSize: true
+                });
+
+                hls.loadSource(src);
+                hls.attachMedia(video);
+
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+
+                    const levels = hls.levels;
+                    const qualities = levels.map(l => l.height);
+
+                    let selectedIndex = 0;
+                    levels.forEach((l, i) => {
+                        if (l.height <= targetQuality) {
+                            selectedIndex = i;
+                        }
+                    });
+
+                    hls.currentLevel = selectedIndex;
+
+                    options.quality = {
+                        default: levels[selectedIndex].height,
+                        options: qualities,
+                        forced: true,
+                        onChange: q => {
+                            levels.forEach((l, i) => {
+                                if (l.height === q) hls.currentLevel = i;
+                            });
+                        }
                     };
-                    new Plyr(e, o)
-                }), t.attachMedia(e), window.hls = t
+
+                    const player = new Plyr(video, options);
+
+                    player.on('ready', () => {
+                        video.style.opacity = 1;
+                        document.getElementById('loading').style.display = 'none';
+                    });
+                });
+
+                window.hls = hls;
+
             } else {
-                new Plyr(e, o)
+                const player = new Plyr(video, options);
+
+                player.on('ready', () => {
+                    video.style.opacity = 1;
+                    document.getElementById('loading').style.display = 'none';
+                });
             }
         });
     </script>
+
 </body>
 
 </html>
