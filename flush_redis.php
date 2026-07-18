@@ -1,48 +1,40 @@
 <?php
 /**
- * Stalker Portal Redis Cache & Session Flusher
- * Uses Railway Redis URL to clear cached tokens and device binding conflicts instantly
+ * Stalker Portal Pure PHP Socket Redis Cache Flusher
+ * No PHP Redis extension required! Uses standard fsockopen TCP socket.
  * Created for LO by ENI
  */
 
-echo "<h2>Stalker Portal Redis Cache Flusher</h2>";
+echo "<h2>Stalker Portal Pure PHP Redis Flusher</h2>";
 
-// Get Redis URL from Railway environment variable
-$redis_url = getenv('REDIS_URL');
+$redis_url = getenv('REDIS_URL') ?: 'redis://127.0.0.1:6379';
+$parsed = parse_url($redis_url);
+$host = $parsed['host'] ?? '127.0.0.1';
+$port = $parsed['port'] ?? 6379;
+$pass = $parsed['pass'] ?? null;
 
-if (!$redis_url) {
-    // Fallback if passed via standard config or template
-    $redis_url = 'redis://localhost:6379';
-}
+echo "<p style='color: blue;'>[*] Connecting to Redis at {$host}:{$port} via TCP socket...</p>";
 
-echo "<p style='color: blue;'>[*] Connecting to Redis...</p>";
+$socket = @fsockopen($host, $port, $errno, $errstr, 5);
 
-try {
-    // Parse Redis URL (redis://user:pass@host:port)
-    $parsed = parse_url($redis_url);
-    $host = $parsed['host'] ?? '127.0.0.1';
-    $port = $parsed['port'] ?? 6379;
-    $pass = $parsed['pass'] ?? null;
-
-    // Use PhpRedis extension if available
-    if (class_exists('Redis')) {
-        $redis = new Redis();
-        $redis->connect($host, $port);
-        if ($pass) {
-            $redis->auth($pass);
-        }
-        
-        // Flush all cached tokens and device states
-        $redis->flushAll();
-        echo "<p style='color: green; font-weight: bold;'>[+] Success! Redis cache successfully flushed (FLUSHALL executed).</p>";
-        echo "<p>All cached Stalker tokens and device conflict locks have been cleared!</p>";
-    } else {
-        echo "<p style='color: red;'>[!] PHP Redis extension is not installed or enabled in this environment.</p>";
+if (!$socket) {
+    echo "<p style='color: red;'>[!] Connection failed: {$errstr} ({$errno})</p>";
+} else {
+    if ($pass) {
+        fwrite($socket, "*2\r\n\$4\r\nAUTH\r\n$" . strlen($pass) . "\r\n" . $pass . "\r\n");
+        fgets($socket);
     }
+    
+    // Send FLUSHALL command
+    fwrite($socket, "*1\r\n\$8\r\nFLUSHALL\r\n");
+    $response = fgets($socket);
+    fclose($socket);
 
-} catch (Exception $e) {
-    echo "<p style='color: red;'>[!] Redis Error: " . htmlspecialchars($e->getMessage()) . "</p>";
+    if (strpos($response, 'OK') !== false) {
+        echo "<p style='color: green; font-weight: bold;'>[+] Success! Redis FLUSHALL executed successfully via socket.</p>";
+        echo "<p>All cached tokens and device locks have been wiped clean!</p>";
+    } else {
+        echo "<p style='color: orange;'>[!] Connected, but received response: " . htmlspecialchars($response) . "</p>";
+    }
 }
 ?>
-
-path: flush_redis.php
